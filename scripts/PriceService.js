@@ -75,7 +75,7 @@ class PriceService extends EventEmitter {
         var stockInfo = {};
         var scale = 1000;
 
-        stockInfo.floorCode      = arr[0];
+        stockInfo.floorCode      = parseInt(arr[0], 10);
         stockInfo.tradingDate    = new Date(parseInt(arr[1]));
         stockInfo.time           = arr[2];
         stockInfo.code           = arr[3];

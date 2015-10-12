@@ -1,31 +1,39 @@
-var Backbone = require("backbone");
-var _ = require("underscore");
+var EventEmitter = require("events");
 var SockJS = require("sockjs-client");
+var $ = require("jquery");
+var {Map, List} = require("immutable");
 
 
-var Stock = Backbone.Model.extend({
-    idAttribute: "code",
+/**
+ * A client for the VND price service. It emits the following events:
+ *
+ * - open
+ * - stockChanged
+ */
+class PriceService extends EventEmitter {
+    constructor(server) {
+        super();
+        this.server = server;
 
-    getFloor() {
-        return {
-            "02": "HNX",
-            "10": "HOSE",
-            "03": "UPCOM"
-        }[this.get("floorCode")];
-    }
-});
+        this.sock = SockJS(this.server + "/realtime");
 
-
-var StockStore = Backbone.Collection.extend({
-    model: Stock,
-
-    initialize: function (models, options) {
-        this.models = models;
-
-        this.sock = SockJS(options.priceServer + "/realtime");
         this.sock.onopen = () => {
-            this.send({"type":"post","data":{"sequence":0,"params":{"name":"TRANSACTION","symbol":""}}});
-            this.send({"type":"requestFullData","data":{"sequence":0}});
+            this.emit("open");
+
+            this._send({
+                type: "post",
+                data: {
+                    sequence: 0,
+                    params: {
+                        name: "TRANSACTION",
+                        symbol: ""
+                    }
+                }
+            });
+
+            setInterval(() => {
+                this._send("heartbeat");
+            }, 25000);
         };
 
         this.sock.onmessage = (event) => {
@@ -36,21 +44,33 @@ var StockStore = Backbone.Collection.extend({
                 data = message.data.data;
             } else if (message.type === "STOCK") {
                 data = [message.data];
+            } else {
+                return;
             }
 
-            _.each(data, (stockInfo) => {
-                var parsed = this.parseStockMessage(stockInfo);
-                var stock = new Stock(parsed);
-                this.add(stock);
-            });
+            var stocks = Map(data);
+            this.emit("stockChanged", stocks.map(this._parseStockMessage));
         };
-    },
+    }
 
-    listenToStock: function(code) {
-        this.send({"type":"registConsumer","data":{"sequence":0,"params":{"name":"STOCK", "codes": [code]}}});
-    },
+    subscribeToStock(codes) {
+        this._send({
+            "type": "registConsumer",
+            "data": {
+                "sequence": 0,
+                "params": {
+                    "name": "STOCK",
+                    "codes": codes
+                }
+            }
+        });
+    }
 
-    parseStockMessage: function(message) {
+    _send(object) {
+        this.sock.send(JSON.stringify(object));
+    }
+
+    _parseStockMessage(message) {
         var arr = message.split("|");
         var stockInfo = {};
         var scale = 1000;
@@ -92,12 +112,18 @@ var StockStore = Backbone.Collection.extend({
         stockInfo.offerQtty03    = parseInt(arr[34]);
 
         return stockInfo;
-    },
-
-    send: function (object) {
-        this.sock.send(JSON.stringify(object));
     }
-});
+
+    /**
+     * Get a list of companies on the market together with its stock code and
+     * floorCode.
+     *
+     * @return {Promise<List<{code, floorCode, companyName}>>}
+     */
+    getCompanies() {
+        return $.get(`http://${this.server}/priceservice/company/snapshot/`);
+    }
+}
 
 
-module.exports = StockStore;
+module.exports = PriceService;

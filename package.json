@@ -1,0 +1,25 @@
+{
+  "name": "smartboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "backbone": "^1.2.3",
+    "browser-sync": "^2.9.11",
+    "browserify": "^11.2.0",
+    "chokidar-cli": "^1.0.1",
+    "immutable": "^3.7.5",
+    "jquery": "^2.1.4",
+    "react": "^0.14.0",
+    "sockjs": "^0.3.15",
+    "sockjs-client": "^1.0.3",
+    "react-dom": "^0.14.0"
+  },
+  "dependencies": {}
+}

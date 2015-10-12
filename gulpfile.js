@@ -18,14 +18,14 @@ function compile(watch) {
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./build'));
+      .pipe(gulp.dest('./build'))
+      .pipe(browserSync.reload({stream: true}));
   }
 
   if (watch) {
     bundler.on('update', function() {
       console.log('-> bundling...');
       rebundle();
-      browserSync.reload();
     });
   }
 

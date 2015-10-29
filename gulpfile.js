@@ -39,9 +39,14 @@ function compile(watch) {
 function watch() {
   compile(true);
 
+  gulp.watch(paths.styles, ['styles']);
+  gulp.watch(paths.html, ['html']);
+
   browserSync.init({
       server: "./build"
   });
+
+  browserSync.watch('./build/**/*.{css,html}').on('change', browserSync.reload)
 };
 
 gulp.task('build', function() { return compile(); });

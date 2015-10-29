@@ -16,6 +16,7 @@
     "browserify": "^11.2.0",
     "chokidar-cli": "^1.0.1",
     "classnames": "^2.1.5",
+    "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-sourcemaps": "^1.6.0",
     "immutable": "^3.7.5",

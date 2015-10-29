@@ -7,6 +7,10 @@ var watchify = require('watchify');
 var babel = require('babelify');
 var browserSync = require('browser-sync').create();
 
+var paths = {
+  html: ['./index.html'],
+  styles: ['./styles/**/*.css']
+};
 
 function compile(watch) {
   var bundler = watchify(browserify('./scripts/main.js', { debug: true }).transform(babel));
@@ -42,5 +46,13 @@ function watch() {
 
 gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
+gulp.task('html', function() {
+  gulp.src(paths.html)
+    .pipe(gulp.dest('./build'));
+});
+gulp.task('styles', function() {
+  gulp.src(paths.styles)
+    .pipe(gulp.dest('./build/styles'));
+});
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['html', 'styles', 'watch']);

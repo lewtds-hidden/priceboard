@@ -15,5 +15,19 @@ module.exports = {
         var formatted = (qty * 10).toString().replace(/(\d)(?=(?:[0-9]{3})+\b)/, '$1,');
         return formatted.substr(0, formatted.length - 1); // trim the last digit
     },
+
+    getChangeClass(price, {basicPrice, ceilingPrice, floorPrice}) {
+        if (price >= ceilingPrice) {
+            return 'ceiling';
+        } else if (price > basicPrice) {
+            return 'inc';
+        } else if (price === basicPrice) {
+            return 'ref';
+        } else if (price > floorPrice) {
+            return 'dec';
+        } else if (price > 0) {
+            return 'floor';
+        }
+        return 'ref';
     }
 }

@@ -1,6 +1,5 @@
 var React = require("react");
-var {formatPrice, formatQty} = require("../utils");
-
+var StockRow = require('./StockRow.jsx');
 
 var StockTable = function({stocks}) {
     // var stocks = stocks.sort();
@@ -56,40 +55,7 @@ var StockTable = function({stocks}) {
 
             <tbody>
                 {stocks.map(stock => (
-                    <tr key={stock.code}>
-                        <td>{stock.code}</td>
-                        <td>{formatPrice(stock.basicPrice)}</td>
-                        <td>{formatPrice(stock.ceilingPrice)}</td>
-                        <td>{formatPrice(stock.floorPrice)}</td>
-                        <td>NaN</td>
-
-                        <td>{formatPrice(stock.bidPrice03)}</td>
-                        <td>{formatQty(stock.bidQtty03)}</td>
-                        <td>{formatPrice(stock.bidPrice02)}</td>
-                        <td>{formatQty(stock.bidQtty02)}</td>
-                        <td>{formatPrice(stock.bidPrice01)}</td>
-                        <td>{formatQty(stock.bidQtty01)}</td>
-
-                        <td>{formatPrice(stock.matchPrice)}</td>
-                        <td>{formatQty(stock.matchQtty)}</td>
-                        <td>NaN</td>
-
-                        <td>{formatPrice(stock.offerPrice01)}</td>
-                        <td>{formatQty(stock.offerQtty01)}</td>
-                        <td>{formatPrice(stock.offerPrice02)}</td>
-                        <td>{formatQty(stock.offerQtty02)}</td>
-                        <td>{formatPrice(stock.offerPrice03)}</td>
-                        <td>{formatQty(stock.offerQtty03)}</td>
-
-                        <td>{formatPrice(stock.highestPrice)}</td>
-                        <td>{formatPrice(stock.lowestPrice)}</td>
-                        <td>NaN</td>
-                        <td>NaN</td>
-
-                        <td>NaN</td>
-                        <td>NaN</td>
-                        <td>NaN</td>
-                    </tr>
+                    <StockRow stock={stock} />
                 ))}
             </tbody>
         </table>

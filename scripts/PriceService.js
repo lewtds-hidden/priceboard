@@ -43,12 +43,10 @@ class PriceService extends EventEmitter {
             if (message.type === "returnData" && message.data.name !== "TRANSACTION") {
                 var data = message.data.data;
                 stocks = Map(data).map(this._parseStockMessage);
-
             } else if (message.type === "STOCK") {
                 var data = message.data;
                 var stock = this._parseStockMessage(data);
-                stocks = {};
-                stocks[stock.code] = stock;
+                stocks = Map({[stock.code]: stock});
             } else {
                 return;
             }

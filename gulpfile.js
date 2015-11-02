@@ -6,7 +6,13 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var babel = require('babelify');
 var browserSync = require('browser-sync').create();
+var del = require('del');
 
+var paths = {
+  html: ['./index.html'],
+  styles: ['./styles/**/*.css'],
+  clean: ['./build']
+};
 
 function compile(watch) {
   var bundler = watchify(browserify('./scripts/main.js', { debug: true }).transform(babel));
@@ -35,6 +41,9 @@ function compile(watch) {
 function watch() {
   compile(true);
 
+  gulp.watch(paths.styles, ['styles']);
+  gulp.watch(paths.html, ['html']);
+
   browserSync.init({
       server: "./build"
   });
@@ -43,4 +52,22 @@ function watch() {
 gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
-gulp.task('default', ['watch']);
+gulp.task('clean', function(cb) {
+  return del(paths.clean, cb);
+});
+
+gulp.task('html', function() {
+  return gulp.src(paths.html)
+    .pipe(gulp.dest('./build'))
+    .pipe(browserSync.reload({stream: true}));;
+});
+
+gulp.task('styles', function() {
+  return gulp.src(paths.styles)
+    .pipe(gulp.dest('./build/styles'))
+    .pipe(browserSync.reload({stream: true}));;
+});
+
+gulp.task('default', ['clean'], function() {
+  gulp.start('html', 'styles', 'watch');
+});

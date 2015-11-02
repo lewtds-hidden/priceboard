@@ -1,0 +1,18 @@
+.floor {
+    color: #00c5c5;
+}
+.ceiling {
+    color: #ce0ece;
+}
+.ref {
+    color: #deb200;
+}
+.dec {
+    color: #d00;
+}
+.inc {
+    color: #080;
+}
+.text-right {
+    text-align: right;
+}

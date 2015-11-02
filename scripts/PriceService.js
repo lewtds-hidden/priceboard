@@ -38,18 +38,20 @@ class PriceService extends EventEmitter {
 
         this.sock.onmessage = (event) => {
             var message = JSON.parse(event.data);
-            var data;
+            var stocks;
 
             if (message.type === "returnData" && message.data.name !== "TRANSACTION") {
-                data = message.data.data;
+                var data = message.data.data;
+                stocks = Map(data).map(this._parseStockMessage);
             } else if (message.type === "STOCK") {
-                data = [message.data];
+                var data = message.data;
+                var stock = this._parseStockMessage(data);
+                stocks = Map({[stock.code]: stock});
             } else {
                 return;
             }
 
-            var stocks = Map(data);
-            this.emit("stockChanged", stocks.map(this._parseStockMessage));
+            this.emit("stockChanged", stocks);
         };
     }
 

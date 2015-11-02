@@ -10,7 +10,8 @@ var del = require('del');
 
 var paths = {
   html: ['./index.html'],
-  styles: ['./styles/**/*.css']
+  styles: ['./styles/**/*.css'],
+  clean: ['./build']
 };
 
 function compile(watch) {
@@ -51,25 +52,22 @@ function watch() {
 gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
-gulp.task('clean:html', function() {
-  return del(['./build/index.html']);
-});
-gulp.task('clean:styles', function() {
-  return del(['./build/styles/**/*']);
+gulp.task('clean', function(cb) {
+  return del(paths.clean, cb);
 });
 
-gulp.task('html', ['clean:html'], function() {
+gulp.task('html', function() {
   return gulp.src(paths.html)
     .pipe(gulp.dest('./build'))
     .pipe(browserSync.reload({stream: true}));;
 });
 
-gulp.task('styles', ['clean:styles'], function() {
+gulp.task('styles', function() {
   return gulp.src(paths.styles)
     .pipe(gulp.dest('./build/styles'))
     .pipe(browserSync.reload({stream: true}));;
 });
 
-gulp.task('default', ['html', 'styles'], function() {
-  watch();
+gulp.task('default', ['clean'], function() {
+  gulp.start('html', 'styles', 'watch');
 });

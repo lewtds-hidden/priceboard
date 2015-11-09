@@ -1,5 +1,5 @@
 var React = require("react");
-var StockRow = require('./StockRow.jsx');
+var StockRow = require('./StockRow');
 
 var StockTable = function({stocks}) {
     // var stocks = stocks.sort();

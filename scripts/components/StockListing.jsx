@@ -1,6 +1,6 @@
 var React = require("react");
 var {FloorCode} = require("../common");
-var StockTable = require("./StockTable.jsx");
+var StockTable = require("./StockTable");
 var classNames = require("classnames");
 
 

@@ -2,7 +2,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var {Map, List} = require("immutable");
 var PriceService = require("./PriceService");
-var StockListing = require("./components/StockListing.jsx");
+var StockListing = require("./components/StockListing");
 
 
 var priceService = new PriceService("125.212.207.66");
